@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 // Importando componentes
 // Components
@@ -14,7 +15,7 @@ const Registrar = () => {
   const [alerta, setAlerta] = useState({});
 
   // Función donde validamos el formulario
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validando que no esten vacios
@@ -49,8 +50,25 @@ const Registrar = () => {
     setAlerta({});
 
     // Crear el usuario en la API
-
-    console.log("Creando");
+    try {
+      // Realizamos la petición post, indicamos la url y los datos a enviar
+      const { data } = await axios.post("http://localhost:4000/api/usuarios", {
+        nombre,
+        password,
+        email,
+      });
+      // Actualizamos el state alert con el valor que responde desde el backend cuando se crea un usuario
+      setAlerta({
+        msg: data.msg,
+        error: false,
+      });
+    } catch (error) {
+      // Actualizamos el state alert con el error que responde desde el backend cuando falla alguna validación
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true,
+      });
+    }
   };
 
   // Destructurando msg del objeto alerta
