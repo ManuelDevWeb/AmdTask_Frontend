@@ -3,12 +3,14 @@ import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
   return (
-    <>
-      <h1>AuthLayout</h1>
-
-      {/* Contenido rutas hijas */}
-      <Outlet />
-    </>
+    <div className="flex justify-center items-center">
+      <main className="container mx-auto mt-5 md:mt-20 p-5 md:flex md:justify-center">
+        <div className="md:w-2/3 lg:w-2/5">
+          {/* Contenido rutas hijas */}
+          <Outlet />
+        </div>
+      </main>
+    </div>
   );
 };
 
