@@ -1,12 +1,60 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+// Importando componentes
+// Components
+import Alerta from "../components/Alerta";
+
 const Registrar = () => {
   // State para manejar los campos del formulario
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repetirPassword, setRepetirPassword] = useState("");
+  const [alerta, setAlerta] = useState({});
+
+  // Función donde validamos el formulario
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validando que no esten vacios
+    if ([nombre, email, password, repetirPassword].includes("")) {
+      // Actualizamos el state de alerta
+      setAlerta({
+        msg: "Todos los campos son obligatorios",
+        error: true,
+      });
+      return;
+    }
+
+    // Validando que password y repetirPassword sean iguales
+    if (password !== repetirPassword) {
+      // Actualizamos el state de alerta
+      setAlerta({
+        msg: "Los password no son iguales",
+        error: true,
+      });
+      return;
+    }
+
+    // Validando que password sea mayor a 6 caracteres
+    if (password.length < 6) {
+      // Actualizamos el state de alerta
+      setAlerta({
+        msg: "El password es muy corto, agrega mínimo 6 caracteres",
+        error: true,
+      });
+    }
+
+    setAlerta({});
+
+    // Crear el usuario en la API
+
+    console.log("Creando");
+  };
+
+  // Destructurando msg del objeto alerta
+  const { msg } = alerta;
 
   return (
     <>
@@ -15,7 +63,16 @@ const Registrar = () => {
         <span className="text-slate-700">proyectos</span>
       </h1>
 
-      <form className="my-10 bg-white shadow rounded-lg p-10">
+      {
+        // Si hay un mensaje, hay una alerta por ende mostramos llamamos el componente
+        msg && <Alerta alerta={alerta} />
+      }
+
+      <form
+        className="my-10 bg-white shadow rounded-lg p-10"
+        // Se ejecuta la función handleSubmit cuando el usuario envía el formulario
+        onSubmit={handleSubmit}
+      >
         {/* Nombre */}
         <div className="my-5">
           <label
