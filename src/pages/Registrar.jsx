@@ -1,6 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Registrar = () => {
+  // State para manejar los campos del formulario
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repetirPassword, setRepetirPassword] = useState("");
+
   return (
     <>
       <h1 className="text-sky-600 font-black text-5xl md:text-6xl capitalize">
@@ -22,6 +29,10 @@ const Registrar = () => {
             type="text"
             placeholder="Tu Nombre"
             className="w-full mt-2 p-3 border rounded-xl bg-gray-50  focus:outline-sky-700"
+            // El value del input es el valor del state de nombre
+            value={nombre}
+            // Actualiza el state de nombre cada que cambia el input
+            onChange={(e) => setNombre(e.target.value)}
           />
         </div>
 
@@ -38,6 +49,10 @@ const Registrar = () => {
             type="email"
             placeholder="Email de Registro"
             className="w-full mt-2 p-3 border rounded-xl bg-gray-50  focus:outline-sky-700"
+            // El value del input es el valor del state de email
+            value={email}
+            // Actualiza el state de email cada que cambia el input
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -54,6 +69,10 @@ const Registrar = () => {
             type="password"
             placeholder="Password de Registro"
             className="w-full mt-2 mb-5 p-3 border rounded-xl bg-gray-50  focus:outline-sky-700"
+            // El value del input es el valor del state de password
+            value={password}
+            // Actualiza el state de password cada que cambia el input
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
@@ -70,6 +89,10 @@ const Registrar = () => {
             type="password"
             placeholder="Repetir tu Password"
             className="w-full mt-2 mb-5 p-3 border rounded-xl bg-gray-50  focus:outline-sky-700"
+            // El value del input es el valor del state de repetirPassword
+            value={repetirPassword}
+            // Actualiza el state de repetirPassword cada que cambia el input
+            onChange={(e) => setRepetirPassword(e.target.value)}
           />
         </div>
 
