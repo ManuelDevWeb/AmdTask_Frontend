@@ -90,7 +90,7 @@ const Registrar = () => {
       </h1>
 
       {
-        // Si hay un mensaje, hay una alerta por ende mostramos llamamos el componente
+        // Si hay un mensaje, hay una alerta por ende llamamos el componente
         msg && <Alerta alerta={alerta} />
       }
 
