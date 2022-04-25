@@ -14,7 +14,7 @@ const Registrar = () => {
   const [repetirPassword, setRepetirPassword] = useState("");
   const [alerta, setAlerta] = useState({});
 
-  // Función donde validamos el formulario
+  // Función donde validamos el formulario y enviamos petición
   const handleSubmit = async (e) => {
     e.preventDefault();
 
