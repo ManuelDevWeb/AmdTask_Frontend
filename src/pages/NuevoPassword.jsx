@@ -66,8 +66,8 @@ const NuevoPassword = () => {
     // Actualizando la contraseña en la API
     try {
       // Realizamos la petición post, indicamos la url y los datos a enviar
-      const { data } = await axios.post(
-        `http://localhost:4000/api/usuarios/recuperar-password/${token}`,
+      const { data } = await clienteAxios.post(
+        `/usuarios/recuperar-password/${token}`,
         {
           password,
         }
@@ -107,9 +107,9 @@ const NuevoPassword = () => {
         // Si token valido es true mostramos el formulario
         tokenValido && (
           <form
+            className="my-10 bg-white shadow rounded-lg p-10"
             // Se ejecuta la función handleSubmit cuando el usuario envía el formulario
             onSubmit={handleSubmit}
-            className="my-10 bg-white shadow rounded-lg p-10"
           >
             {/* Password */}
             <div className="my-5">
