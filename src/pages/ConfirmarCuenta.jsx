@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
 
 // Importando componentes
 // Componentes
 import Alerta from "../components/Alerta";
+// Config
+import { clienteAxios } from "../config/clienteAxios";
 
 const ConfirmarCuenta = () => {
   // Leyendo el valor id que viene por URL
@@ -19,9 +20,9 @@ const ConfirmarCuenta = () => {
   useEffect(() => {
     const confirmarCuenta = async () => {
       try {
-        const url = `http://localhost:4000/api/usuarios/confirmar/${id}`;
+        const url = `/usuarios/confirmar/${id}`;
         // Realizamos la petición get, indicamos la url
-        const { data } = await axios.get(url);
+        const { data } = await clienteAxios.get(url);
         // Actualizamos el state alert con el valor que responde desde el backend cuando se confirma una cuenta
         setAlerta({
           msg: data.msg,

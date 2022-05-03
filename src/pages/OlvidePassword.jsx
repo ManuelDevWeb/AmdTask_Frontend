@@ -5,6 +5,8 @@ import axios from "axios";
 // Importando componentes
 // Componentes
 import Alerta from "../components/Alerta";
+// Config
+import { clienteAxios } from "../config/clienteAxios";
 
 const OlvidePassword = () => {
   // State para manejar algunos valores
@@ -28,7 +30,7 @@ const OlvidePassword = () => {
     // Enviar el email desde la API
     try {
       // Realizamos la petición post, indicamos la url y los datos a enviar
-      const { data } = await axios.post(
+      const { data } = await clienteAxios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/usuarios/recuperar-password`,
         {
           email,

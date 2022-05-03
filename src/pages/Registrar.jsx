@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 // Importando componentes
 // Components
 import Alerta from "../components/Alerta";
+// Config
+import { clienteAxios } from "../config/clienteAxios";
 
 const Registrar = () => {
   // State para manejar los campos del formulario
@@ -45,6 +46,7 @@ const Registrar = () => {
         msg: "El password es muy corto, agrega mínimo 6 caracteres",
         error: true,
       });
+      return;
     }
 
     setAlerta({});
@@ -52,14 +54,11 @@ const Registrar = () => {
     // Crear el usuario en la API
     try {
       // Realizamos la petición post, indicamos la url y los datos a enviar
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/usuarios`,
-        {
-          nombre,
-          password,
-          email,
-        }
-      );
+      const { data } = await clienteAxios.post("/usuarios", {
+        nombre,
+        password,
+        email,
+      });
       // Actualizamos el state alert con el valor que responde desde el backend cuando se crea un usuario
       setAlerta({
         msg: data.msg,
