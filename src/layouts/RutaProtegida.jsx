@@ -5,7 +5,9 @@ import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 // Components
-import { Proyectos } from "../pages/Proyectos";
+import Proyectos from "../pages/Proyectos";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 
 const RutaProtegida = () => {
   // Destructurando los valores que retorna el contexto AuthContext por medio del hook useAuth
@@ -18,10 +20,23 @@ const RutaProtegida = () => {
     <>
       {
         /* Si el usuario no está autenticado lo redireccionamos al login */
-        auth._id ? <Proyectos /> : <Navigate to="/" />
+        auth._id ? (
+          <div className="bg-gray-100">
+            <Header />
+            <div className="md:flex md:min-h-screen">
+              <Sidebar />
+              <main className="flex-1 p-10">
+                {/* Contenido rutas hijas */}
+                <Outlet />
+              </main>
+            </div>
+          </div>
+        ) : (
+          <Navigate to="/" />
+        )
       }
     </>
   );
 };
 
-export { RutaProtegida };
+export default RutaProtegida;

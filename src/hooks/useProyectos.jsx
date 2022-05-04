@@ -2,11 +2,11 @@
 
 import { useContext } from "react";
 // Context
-import AuthContext from "../context/AuthProvider";
+import ProyectosContext from "../context/ProyectosProvider";
 
-const useAuth = () => {
+const useProyectos = () => {
   // Accediendo a la información del Context
-  return useContext(AuthContext);
+  return useContext(ProyectosContext);
 };
 
-export { useAuth };
+export { useProyectos };
