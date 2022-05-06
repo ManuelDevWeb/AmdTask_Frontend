@@ -110,7 +110,7 @@ const Registrar = () => {
             id="nombre"
             type="text"
             placeholder="Tu Nombre"
-            className="w-full mt-2 p-3 border rounded-xl bg-gray-50  focus:outline-sky-700"
+            className="w-full mt-2 p-3 border rounded-xl bg-gray-50 focus:outline-sky-700"
             // El value del input es el valor del state de nombre
             value={nombre}
             // Actualiza el state de nombre cada que cambia el input
