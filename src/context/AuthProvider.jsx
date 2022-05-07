@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
         // Actualizamos el state de auth (Está en el context de AuthProvider)
         setAuth(data);
         // Redireccionamos a proyectos (Siempre y cuando este autenticado)
-        navigate("/proyectos");
+        // navigate("/proyectos");
       } catch (error) {
         setAuth({});
       }

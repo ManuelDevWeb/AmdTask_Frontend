@@ -29,7 +29,7 @@ const FormularioProyecto = () => {
       return;
     }
 
-    // Pasar datos al provider (En el provider es asincrona)
+    // Pasar datos a la función submitProyecto del provider (En el provider es asincrona)
     await submitProyecto({
       nombre,
       descripcion,

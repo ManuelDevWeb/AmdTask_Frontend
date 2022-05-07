@@ -13,8 +13,44 @@ const ProyectosProvider = ({ children }) => {
   const [proyectos, setProyectos] = useState([]);
   // State que maneja la alerta
   const [alerta, setAlerta] = useState({});
+  // State que maneja el proyecto actual
+  const [proyecto, setProyecto] = useState({});
+  // State que manaje cargando
+  const [cargando, setCargando] = useState(false);
 
   const navigate = useNavigate();
+
+  // UseEffect que se ejecuta una sola vez
+  useEffect(() => {
+    const obtenerProyectos = async () => {
+      try {
+        // Obtener token del local storage
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          return;
+        }
+
+        // Configuración bearer token
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        try {
+          // Realizamos la petición get, indicamos la url
+          const { data } = await clienteAxios.get("/proyectos", config);
+          // Actualizamos el state de proyectos
+          setProyectos(data);
+        } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    obtenerProyectos();
+  }, []);
 
   // Función para enviar alerta al state alerta
   const mostrarAlerta = (alerta) => {
@@ -28,7 +64,7 @@ const ProyectosProvider = ({ children }) => {
   // Función para crear el proyecto
   const submitProyecto = async (proyecto) => {
     try {
-      // Obtener token del local storage
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -51,6 +87,8 @@ const ProyectosProvider = ({ children }) => {
           config
         );
         // console.log(data);
+        // Actualizamos el state de proyectos
+        setProyectos([...proyectos, data]);
         // Actualizamos el state de alerta
         setAlerta({
           msg: "Proyecto creado correctamente",
@@ -71,10 +109,48 @@ const ProyectosProvider = ({ children }) => {
     }
   };
 
+  // Función para obtener proyecto
+  const obtenerProyecto = async (id) => {
+    setCargando(true);
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la petición get, indicamos la url y los parámetros a enviar
+      const { data } = await clienteAxios.get(`/proyectos/${id}`, config);
+      // console.log(data);
+      // Actualizamos el state proyecto
+      setProyecto(data);
+    } catch (error) {
+      console.log(error);
+    }
+    setCargando(false);
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
-      value={{ proyectos, mostrarAlerta, alerta, submitProyecto }}
+      value={{
+        proyectos,
+        mostrarAlerta,
+        alerta,
+        submitProyecto,
+        obtenerProyecto,
+        proyecto,
+        cargando,
+      }}
     >
       {children}
     </ProyectosContext.Provider>
