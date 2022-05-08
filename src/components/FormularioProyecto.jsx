@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 // Hooks
 import { useProyectos } from "../hooks/useProyectos";
@@ -7,13 +8,31 @@ import Alerta from "./Alerta";
 
 const FormularioProyecto = () => {
   // State para manejar los campos del formulario
+  const [existId, setExistId] = useState(null);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescription] = useState("");
   const [fechaEntrega, setFechaEntrega] = useState("");
   const [cliente, setCliente] = useState("");
 
+  // Leyendo el valor id que viene por URL
+  const params = useParams();
+  const { id } = params;
+
   // Destructurando los valores que retorna el contexto AuthContext por medio del hook useAuth
-  const { mostrarAlerta, alerta, submitProyecto } = useProyectos();
+  const { mostrarAlerta, alerta, submitProyecto, proyecto } = useProyectos();
+
+  // Se ejecuta cuando cambie params
+  useEffect(() => {
+    // Si existe id en el params actualizamos los state de los campos del formulario
+    // No es necesario obtener de nuevo el proyecto, puesto en el componente EditarProyecto ya se obtuvo y llamamos este componente
+    if (id) {
+      setExistId(proyecto._id);
+      setNombre(proyecto.nombre);
+      setDescription(proyecto.descripcion);
+      setFechaEntrega(proyecto.fechaEntrega?.split("T")[0]);
+      setCliente(proyecto.cliente);
+    }
+  }, [params]);
 
   // Función donde validamos el formulario y enviamos petición
   const handleSubmit = async (e) => {
@@ -31,6 +50,7 @@ const FormularioProyecto = () => {
 
     // Pasar datos a la función submitProyecto del provider (En el provider es asincrona)
     await submitProyecto({
+      existId,
       nombre,
       descripcion,
       fechaEntrega,
@@ -38,6 +58,7 @@ const FormularioProyecto = () => {
     });
 
     // Reseteamos formulario
+    setExistId(null);
     setNombre("");
     setCliente("");
     setDescription("");
@@ -138,7 +159,7 @@ const FormularioProyecto = () => {
 
       <input
         type="submit"
-        value="Crear Proyecto"
+        value={existId ? "Actualizar Proyecto" : "Crear Proyecto"}
         className="bg-sky-600 w-full p-3 uppercase font-bold text-white rounded cursor-pointer hover:bg-sky-700 transition-colors"
       />
     </form>

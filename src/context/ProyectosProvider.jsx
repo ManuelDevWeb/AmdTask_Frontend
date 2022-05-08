@@ -61,8 +61,70 @@ const ProyectosProvider = ({ children }) => {
     }, 5000);
   };
 
-  // Función para crear el proyecto
+  // Función para crear el proyecto o editarlo según sea el caso
   const submitProyecto = async (proyecto) => {
+    if (proyecto.existId) {
+      await editarProyecto(proyecto);
+    } else {
+      await nuevoProyecto(proyecto);
+    }
+  };
+
+  // Editar proyecto
+  const editarProyecto = async (proyecto) => {
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      try {
+        // Realizamos la petición put (Debemos enviar objeto completo), indicamos la url y los datos a enviar
+        const { data } = await clienteAxios.put(
+          `/proyectos/${proyecto.existId}`,
+          proyecto,
+          config
+        );
+        // Actualizar el state de proyectos
+        const proyectosActualizados = proyectos.map((proyectoState) =>
+          proyectoState._id === data._id ? data : proyectoState
+        );
+        // console.log(proyectosActualizados);
+        setProyectos(proyectosActualizados);
+
+        // Actualizar el state de alerta
+        setAlerta({
+          msg: "Proyecto Actualizado correctamente",
+          error: false,
+        });
+
+        // Redireccionamos a proyectos y reseteamos alerta
+        setTimeout(() => {
+          setAlerta({});
+          navigate("/proyectos");
+        }, 3000);
+      } catch (error) {}
+    } catch (error) {
+      // Actualizamos el state de alerta con el error que responde desde el backend cuando falla alguna validación
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true,
+      });
+    }
+  };
+
+  // Crear proyecto
+  const nuevoProyecto = async (proyecto) => {
     try {
       // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
       const token = localStorage.getItem("token");
