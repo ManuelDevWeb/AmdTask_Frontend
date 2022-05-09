@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Importando componentes
 // Componentes
@@ -17,6 +17,8 @@ const Login = () => {
 
   // Destructurando los valores que retorna el contexto AuthContext por medio del hook useAuth
   const { setAuth } = useAuth();
+
+  const navigate = useNavigate();
 
   // Función donde validamos email, password y enviamos petición
   const handleSubmit = async (e) => {
@@ -45,6 +47,8 @@ const Login = () => {
       localStorage.setItem("token", data.jwtToken);
       // Actualizamos el state de auth (Está en el context de AuthProvider)
       setAuth(data);
+      // Redireccionamos
+      navigate("/proyectos");
     } catch (error) {
       // Actualizamos el state alert con el error que responde desde el backend cuando falla alguna validación
       setAlerta({

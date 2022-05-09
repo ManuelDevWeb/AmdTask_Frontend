@@ -201,6 +201,46 @@ const ProyectosProvider = ({ children }) => {
     setCargando(false);
   };
 
+  // Función para eliminar proyecto
+  const eliminarProyecto = async (id) => {
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la petición delete, indicamos la url
+      const { data } = await clienteAxios.delete(`/proyectos/${id}`, config);
+      // Actualizamos el state de alerta
+      setAlerta({
+        msg: data.msg,
+        error: false,
+      });
+      // Actualizamos el state de proyectos
+      const proyectosActualizados = proyectos.filter(
+        (proyectoState) => proyectoState._id !== id
+      );
+      setProyectos(proyectosActualizados);
+      // Redireccionamos a proyectos y reseteamos alerta
+      setTimeout(() => {
+        setAlerta({});
+        navigate("/proyectos");
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
@@ -210,6 +250,7 @@ const ProyectosProvider = ({ children }) => {
         alerta,
         submitProyecto,
         obtenerProyecto,
+        eliminarProyecto,
         proyecto,
         cargando,
       }}
