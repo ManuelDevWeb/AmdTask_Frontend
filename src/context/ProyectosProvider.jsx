@@ -17,6 +17,8 @@ const ProyectosProvider = ({ children }) => {
   const [proyecto, setProyecto] = useState({});
   // State que manaje cargando
   const [cargando, setCargando] = useState(false);
+  // State que maneja el modal
+  const [modalFormularioTarea, setModalFormularioTarea] = useState(false);
 
   const navigate = useNavigate();
 
@@ -241,6 +243,37 @@ const ProyectosProvider = ({ children }) => {
     }
   };
 
+  // Función para cambiar el valor de modalFormularioTarea
+  const handleModalTarea = () => {
+    setModalFormularioTarea(!modalFormularioTarea);
+  };
+
+  // Función para crear tarea
+  const submitTarea = async (tarea) => {
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la peticion post, idicamos la url y los datos a enviar
+      const { data } = await clienteAxios.post("/tareas", tarea, config);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
@@ -253,6 +286,9 @@ const ProyectosProvider = ({ children }) => {
         eliminarProyecto,
         proyecto,
         cargando,
+        modalFormularioTarea,
+        handleModalTarea,
+        submitTarea,
       }}
     >
       {children}

@@ -6,20 +6,21 @@ import { Link } from "react-router-dom";
 import { useProyectos } from "../hooks/useProyectos";
 // Components
 import ModalFormularioTarea from "../components/ModalFormularioTarea";
+import Tarea from "../components/Tarea";
 
 const Proyecto = () => {
   // Leyendo el valor id que viene por URL
   const params = useParams();
   const { id } = params;
 
-  // State para manejar el modal
-  const [modal, setModal] = useState(false);
-
   // Destructurando los valores que retorna el contexto ProyectosContext por medio del hook useProyecto
-  const { obtenerProyecto, proyecto, cargando } = useProyectos();
+  const { obtenerProyecto, proyecto, cargando, handleModalTarea } =
+    useProyectos();
 
   // Destructurando los valores datos del proyecto
   const { nombre } = proyecto;
+
+  console.log(proyecto);
 
   // Se ejecuta una sola vez cuando cargue el componente
   useEffect(() => {
@@ -67,7 +68,7 @@ const Proyecto = () => {
           type="button"
           className="text-sm px-5 py-3 mt-5 w-full md:w-auto rounded-lg uppercase font-bold bg-sky-400 text-white text-center flex gap-2 items-center justify-center"
           // Se ejecuta al dar click en el boton
-          onClick={() => setModal(true)}
+          onClick={handleModalTarea}
         >
           {/* 
             Icono Agregar (Extraido desde https://heroicons.com/) 
@@ -88,7 +89,23 @@ const Proyecto = () => {
           Nueva Tarea
         </button>
 
-        <ModalFormularioTarea modal={modal} setModal={setModal} />
+        <p className="font-bold text-xl mt-10">Tareas del Proyecto</p>
+        <div className="bg-white shadow mt-10 rounded-lg">
+          {
+            /* Validando que el proyecto tenga tareas */
+            proyecto.tareas?.length ? (
+              proyecto.tareas?.map((tarea) => (
+                <Tarea key={tarea._id} tarea={tarea} />
+              ))
+            ) : (
+              <p className="text-center my-5 p-10">
+                No hay tareas en este proyecto
+              </p>
+            )
+          }
+        </div>
+
+        <ModalFormularioTarea />
       </>
     )
   );

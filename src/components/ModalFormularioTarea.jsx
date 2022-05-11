@@ -1,14 +1,65 @@
 import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { useParams } from "react-router-dom";
 
-const ModalFormularioTarea = ({ modal, setModal }) => {
+// Hooks
+import { useProyectos } from "../hooks/useProyectos";
+// Componentes
+import Alerta from "./Alerta";
+
+const PRIORIDAD = ["Baja", "Media", "Alta"];
+
+const ModalFormularioTarea = () => {
+  // State para manejar los campos del formulario
+  const [nombre, setNombre] = useState("");
+  const [descripcion, setDescription] = useState("");
+  const [prioridad, setPrioridad] = useState("");
+  const [fechaEntrega, setFechaEntrega] = useState("");
+
+  const params = useParams();
+
+  // Destructurando los valores que retorna el contexto ProyectosContext por medio del hook useProyecto
+  const {
+    modalFormularioTarea,
+    handleModalTarea,
+    mostrarAlerta,
+    alerta,
+    submitTarea,
+  } = useProyectos();
+
+  // Función donde validamos el formulario y enviamos petición
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if ([nombre, descripcion, prioridad, fechaEntrega].includes("")) {
+      // Actualizamos el state de alerta
+      mostrarAlerta({
+        msg: "Todos los campos son obligatorios...",
+        error: true,
+      });
+      return;
+    }
+
+    // Pasar datos a la función submitTarea del provider (En el provider es asincrona)
+    submitTarea({
+      nombre,
+      descripcion,
+      fechaEntrega,
+      prioridad,
+      proyecto: params.id,
+    });
+  };
+
+  // Destructurando mdg de alerta
+  const { msg } = alerta;
+
   return (
-    // Se muestra cuando modal es true
-    <Transition.Root show={modal} as={Fragment}>
+    // Se muestra cuando modalFormularioTarea es true
+    <Transition.Root show={modalFormularioTarea} as={Fragment}>
       <Dialog
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
-        onClose={() => setModal(false)}
+        onClose={handleModalTarea}
       >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -45,7 +96,7 @@ const ModalFormularioTarea = ({ modal, setModal }) => {
                 <button
                   type="button"
                   className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  onClick={() => setModal(false)}
+                  onClick={handleModalTarea}
                 >
                   <span className="sr-only">Cerrar</span>
                   <svg
@@ -69,9 +120,106 @@ const ModalFormularioTarea = ({ modal, setModal }) => {
                     as="h3"
                     className="text-lg leading-6 font-bold text-gray-900"
                   >
-                    <h1 className="text-4xl">Título</h1>
+                    Crear Tarea
                   </Dialog.Title>
-                  <p>Contenido</p>
+
+                  {
+                    // Si hay un mensaje, hay una alerta por ende llamamos el componente
+                    msg && <Alerta alerta={alerta} />
+                  }
+
+                  <form
+                    className="my-10"
+                    // Se ejecuta la función handleSubmit cuando el usuario envia el formulario
+                    onSubmit={handleSubmit}
+                  >
+                    {/* Nombre */}
+                    <div className="mb-5">
+                      <label
+                        className="text-gray-700 uppercase font-bold text-sm"
+                        htmlFor="nombre"
+                      >
+                        Nombre Tarea
+                      </label>
+                      <input
+                        id="nombre"
+                        type="text"
+                        className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md focus:outline-sky-700"
+                        // El value del input es el valor del state nombre
+                        value={nombre}
+                        // Actualiza el state de nombre cada que cambia el input
+                        onChange={(e) => setNombre(e.target.value)}
+                        placeholder="Nombre de la Tarea"
+                      />
+                    </div>
+
+                    {/* Descripción */}
+                    <div className="mb-5">
+                      <label
+                        className="text-gray-700 uppercase font-bold text-sm"
+                        htmlFor="descripcion"
+                      >
+                        Descripción Tarea
+                      </label>
+                      <textarea
+                        id="descripcion"
+                        className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md focus:outline-sky-700"
+                        // El value del textarea es el valor del state descripcion
+                        value={descripcion}
+                        // Actualiza el state de descripción cada que cambia el textarea
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Descripción de la Tarea"
+                      ></textarea>
+                    </div>
+
+                    {/* Fecha Entrega */}
+                    <div className="mb-5">
+                      <label
+                        className="text-gray-700 uppercase font-bold text-sm"
+                        htmlFor="fecha-entrega"
+                      >
+                        Fecha Entrega
+                      </label>
+                      <input
+                        id="fecha-entrega"
+                        type="date"
+                        className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md focus:outline-sky-700"
+                        // El value del input es el valor del state fechaEntrega
+                        value={fechaEntrega}
+                        // Actualiza el state de fechaEntrega cada que cambia el input
+                        onChange={(e) => setFechaEntrega(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Prioridad */}
+                    <div className="mb-5">
+                      <label
+                        className="text-gray-700 uppercase font-bold text-sm"
+                        htmlFor="prioridad"
+                      >
+                        Prioridad
+                      </label>
+                      <select
+                        id="prioridad"
+                        className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md focus:outline-sky-700"
+                        // El value del select es el valor del state prioridad
+                        value={prioridad}
+                        // Actualiza el state de prioridad
+                        onChange={(e) => setPrioridad(e.target.value)}
+                      >
+                        <option value="">-- Seleccionar --</option>
+                        {PRIORIDAD.map((opcion) => (
+                          <option key={opcion}>{opcion}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <input
+                      type="submit"
+                      className="bg-sky-600 hover:bg-sky-700 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded"
+                      value="Crear Tarea"
+                    />
+                  </form>
                 </div>
               </div>
             </div>
