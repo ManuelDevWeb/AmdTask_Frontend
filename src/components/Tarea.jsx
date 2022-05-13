@@ -1,19 +1,28 @@
 // Helpers
 import { formatearFecha } from "../helpers/formatearFecha";
+// Hooks
+import { useProyectos } from "../hooks/useProyectos";
 
 const Tarea = ({ tarea }) => {
+  // Destructurando los parametros de tarea
   const { descripcion, nombre, prioridad, fechaEntrega, estado, _id } = tarea;
+
+  // Destructurando los valores que retorna el contexto ProyectosContext por medio del hook useProyecto
+  const { handleModalEditarTarea } = useProyectos();
 
   return (
     <div className="border-b p-5 flex justify-between items-center">
       <div>
         <p className="text-xl">{nombre}</p>
         <p className="text-sm text-gray-500 uppercase">{descripcion}</p>
-        <p className="text-xl capitalize">{formatearFecha(fechaEntrega)}</p>
+        <p className="text-sm capitalize">{formatearFecha(fechaEntrega)}</p>
         <p className="text-gray-600">Prioridad: {prioridad}</p>
       </div>
       <div className="flex gap-2">
-        <button className="bg-indigo-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg">
+        <button
+          className="bg-indigo-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
+          onClick={() => handleModalEditarTarea(tarea)}
+        >
           Editar
         </button>
 

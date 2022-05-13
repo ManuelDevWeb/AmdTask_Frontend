@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -20,7 +20,7 @@ const Proyecto = () => {
   // Destructurando los valores datos del proyecto
   const { nombre } = proyecto;
 
-  console.log(proyecto);
+  // console.log(proyecto);
 
   // Se ejecuta una sola vez cuando cargue el componente
   useEffect(() => {

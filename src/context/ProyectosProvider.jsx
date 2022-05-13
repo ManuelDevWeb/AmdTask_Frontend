@@ -19,6 +19,8 @@ const ProyectosProvider = ({ children }) => {
   const [cargando, setCargando] = useState(false);
   // State que maneja el modal
   const [modalFormularioTarea, setModalFormularioTarea] = useState(false);
+  // State que maneja la tarea
+  const [tarea, setTarea] = useState({});
 
   const navigate = useNavigate();
 
@@ -246,10 +248,61 @@ const ProyectosProvider = ({ children }) => {
   // Función para cambiar el valor de modalFormularioTarea
   const handleModalTarea = () => {
     setModalFormularioTarea(!modalFormularioTarea);
+    setTarea({});
   };
 
-  // Función para crear tarea
+  // Función para crear tarea o editarla segun sea el caso
   const submitTarea = async (tarea) => {
+    if (tarea?.existId) {
+      await editarTarea(tarea);
+    } else {
+      await crearTarea(tarea);
+    }
+  };
+
+  // Editar tarea
+  const editarTarea = async (tarea) => {
+    try {
+      // Obtener token del local storage
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      console.log(tarea);
+
+      // Realizamos la peticion put, indicamos la url y los datos a enviar
+      const { data } = await clienteAxios.put(
+        `/tareas/${tarea.existId}`,
+        tarea,
+        config
+      );
+      console.log(data);
+      // Agregando la tarea al state y actualizar el state de proyecto
+      const proyectoActualizado = { ...proyecto };
+      proyectoActualizado.tareas = proyectoActualizado.tareas.map(
+        (tareaState) => (tareaState._id === data._id ? data : tareaState)
+      );
+      setProyecto(proyectoActualizado);
+      // Actualizar el state de alerta
+      setAlerta({});
+      setModalFormularioTarea(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Crear tarea
+  const crearTarea = async (tarea) => {
     try {
       // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
       const token = localStorage.getItem("token");
@@ -280,6 +333,12 @@ const ProyectosProvider = ({ children }) => {
     }
   };
 
+  // Función para actualizar el state de tarea
+  const handleModalEditarTarea = async (tarea) => {
+    setTarea(tarea);
+    setModalFormularioTarea(true);
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
@@ -295,6 +354,8 @@ const ProyectosProvider = ({ children }) => {
         modalFormularioTarea,
         handleModalTarea,
         submitTarea,
+        handleModalEditarTarea,
+        tarea,
       }}
     >
       {children}

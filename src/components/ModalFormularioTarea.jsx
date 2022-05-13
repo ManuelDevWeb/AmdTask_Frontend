@@ -11,6 +11,7 @@ const PRIORIDAD = ["Baja", "Media", "Alta"];
 
 const ModalFormularioTarea = () => {
   // State para manejar los campos del formulario
+  const [existId, setExistId] = useState("");
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescription] = useState("");
   const [prioridad, setPrioridad] = useState("");
@@ -25,7 +26,30 @@ const ModalFormularioTarea = () => {
     mostrarAlerta,
     alerta,
     submitTarea,
+    tarea,
   } = useProyectos();
+
+  // UseEffect que se ejecuta cada que cambia el state tarea
+  useEffect(() => {
+    // Si existe id en la tarea, actualizamos los state de los campos del formulario
+    if (tarea?._id) {
+      setExistId(tarea._id);
+      setNombre(tarea.nombre);
+      setDescription(tarea.descripcion);
+      setFechaEntrega(tarea.fechaEntrega?.split("T")[0]);
+      setPrioridad(tarea.prioridad);
+      return;
+    }
+
+    // Esto hay que hacerlo porque el componente nunca se desmonta. La primera vez empieza con los
+    // campos del state vacio, pero luego conserva el valor que tenga. Por ende, cada que cambie una
+    // tarea, debemos resetear el state de los campos
+    setExistId("");
+    setNombre("");
+    setDescription("");
+    setPrioridad("");
+    setFechaEntrega("");
+  }, [tarea]);
 
   // Función donde validamos el formulario y enviamos petición
   const handleSubmit = async (e) => {
@@ -42,6 +66,7 @@ const ModalFormularioTarea = () => {
 
     // Pasar datos a la función submitTarea del provider (En el provider es asincrona)
     await submitTarea({
+      existId,
       nombre,
       descripcion,
       fechaEntrega,
@@ -50,6 +75,7 @@ const ModalFormularioTarea = () => {
     });
 
     // Reseteamos el state
+    setExistId("");
     setNombre("");
     setDescription("");
     setPrioridad("");
@@ -126,7 +152,7 @@ const ModalFormularioTarea = () => {
                     as="h3"
                     className="text-lg leading-6 font-bold text-gray-900"
                   >
-                    Crear Tarea
+                    {existId ? "Editar Tarea" : "Crear Tarea"}
                   </Dialog.Title>
 
                   {
@@ -223,7 +249,7 @@ const ModalFormularioTarea = () => {
                     <input
                       type="submit"
                       className="bg-sky-600 hover:bg-sky-700 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded"
-                      value="Crear Tarea"
+                      value={existId ? "Guardar Cambios" : "Crear Tarea"}
                     />
                   </form>
                 </div>
