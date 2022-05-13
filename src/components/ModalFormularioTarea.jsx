@@ -41,13 +41,19 @@ const ModalFormularioTarea = () => {
     }
 
     // Pasar datos a la función submitTarea del provider (En el provider es asincrona)
-    submitTarea({
+    await submitTarea({
       nombre,
       descripcion,
       fechaEntrega,
       prioridad,
       proyecto: params.id,
     });
+
+    // Reseteamos el state
+    setNombre("");
+    setDescription("");
+    setPrioridad("");
+    setFechaEntrega("");
   };
 
   // Destructurando mdg de alerta

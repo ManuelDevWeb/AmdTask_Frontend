@@ -268,7 +268,13 @@ const ProyectosProvider = ({ children }) => {
 
       // Realizamos la peticion post, idicamos la url y los datos a enviar
       const { data } = await clienteAxios.post("/tareas", tarea, config);
-      console.log(data);
+      // console.log(data);
+      // Agregando la tarea al state y actualizar el state de proyecto
+      const proyectoActualizado = { ...proyecto };
+      proyectoActualizado.tareas = [...proyecto.tareas, data];
+      setProyecto(proyectoActualizado);
+      setAlerta({});
+      setModalFormularioTarea(false);
     } catch (error) {
       console.log(error);
     }
