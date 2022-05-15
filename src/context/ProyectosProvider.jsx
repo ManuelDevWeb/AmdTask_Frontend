@@ -17,10 +17,12 @@ const ProyectosProvider = ({ children }) => {
   const [proyecto, setProyecto] = useState({});
   // State que manaje cargando
   const [cargando, setCargando] = useState(false);
-  // State que maneja el modal
+  // State que maneja el modal formulario tarea
   const [modalFormularioTarea, setModalFormularioTarea] = useState(false);
   // State que maneja la tarea
   const [tarea, setTarea] = useState({});
+  // State que maneja el modal eliminar tarea
+  const [modalEliminarTarea, setModalEliminarTarea] = useState(false);
 
   const navigate = useNavigate();
 
@@ -223,7 +225,7 @@ const ProyectosProvider = ({ children }) => {
         },
       };
 
-      // Realizamos la petición delete, indicamos la url
+      // Realizamos la petición delete, indicamos la url y el id
       const { data } = await clienteAxios.delete(`/proyectos/${id}`, config);
       // Actualizamos el state de alerta
       setAlerta({
@@ -339,6 +341,56 @@ const ProyectosProvider = ({ children }) => {
     setModalFormularioTarea(true);
   };
 
+  // Función para cambiar el valor de modalEliminarTarea y actualizar el state de tarea
+  const handleModalEliminarTarea = (tarea) => {
+    setTarea(tarea);
+    setModalEliminarTarea(!modalEliminarTarea);
+  };
+
+  // Función para eliminar tarea
+  const eliminarTarea = async (tarea) => {
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la petición delete, indicamos la url y el id
+      const { data } = await clienteAxios.delete(
+        `/tareas/${tarea._id}`,
+        config
+      );
+      // Actualizar state de alerta
+      setAlerta({
+        msg: data.msg,
+        error: false,
+      });
+      // Eliminando la tarea y actualizando el state de proyecto
+      const proyectoActualizado = { ...proyecto };
+      proyectoActualizado.tareas = proyectoActualizado.tareas.filter(
+        (tareaState) => tareaState._id !== tarea._id
+      );
+      setProyecto(proyectoActualizado);
+      setModalEliminarTarea(false);
+      setTarea({});
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
@@ -356,6 +408,9 @@ const ProyectosProvider = ({ children }) => {
         submitTarea,
         handleModalEditarTarea,
         tarea,
+        modalEliminarTarea,
+        handleModalEliminarTarea,
+        eliminarTarea,
       }}
     >
       {children}

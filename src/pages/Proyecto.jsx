@@ -7,6 +7,8 @@ import { useProyectos } from "../hooks/useProyectos";
 // Components
 import ModalFormularioTarea from "../components/ModalFormularioTarea";
 import Tarea from "../components/Tarea";
+import ModalEliminarTarea from "../components/ModalEliminarTarea";
+import Alerta from "../components/Alerta";
 
 const Proyecto = () => {
   // Leyendo el valor id que viene por URL
@@ -14,7 +16,7 @@ const Proyecto = () => {
   const { id } = params;
 
   // Destructurando los valores que retorna el contexto ProyectosContext por medio del hook useProyecto
-  const { obtenerProyecto, proyecto, cargando, handleModalTarea } =
+  const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta } =
     useProyectos();
 
   // Destructurando los valores datos del proyecto
@@ -26,6 +28,9 @@ const Proyecto = () => {
   useEffect(() => {
     obtenerProyecto(id);
   }, []);
+
+  // Destruturando msg de alerta
+  const { msg } = alerta;
 
   return (
     // Si está cargando mostramos spiner
@@ -90,6 +95,13 @@ const Proyecto = () => {
         </button>
 
         <p className="font-bold text-xl mt-10">Tareas del Proyecto</p>
+
+        <div className="flex justify-center">
+          <div className="w-full md:w-1/3 lg:w-1/4">
+            {msg && <Alerta alerta={alerta} />}
+          </div>
+        </div>
+
         <div className="bg-white shadow mt-10 rounded-lg">
           {
             /* Validando que el proyecto tenga tareas */
@@ -106,6 +118,7 @@ const Proyecto = () => {
         </div>
 
         <ModalFormularioTarea />
+        <ModalEliminarTarea />
       </>
     )
   );

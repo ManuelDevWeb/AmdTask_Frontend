@@ -8,7 +8,7 @@ const Tarea = ({ tarea }) => {
   const { descripcion, nombre, prioridad, fechaEntrega, estado, _id } = tarea;
 
   // Destructurando los valores que retorna el contexto ProyectosContext por medio del hook useProyecto
-  const { handleModalEditarTarea } = useProyectos();
+  const { handleModalEditarTarea, handleModalEliminarTarea } = useProyectos();
 
   return (
     <div className="border-b p-5 flex justify-between items-center">
@@ -36,7 +36,10 @@ const Tarea = ({ tarea }) => {
           </button>
         )}
 
-        <button className="bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg">
+        <button
+          className="bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
+          onClick={() => handleModalEliminarTarea(tarea)}
+        >
           Eliminar
         </button>
       </div>
