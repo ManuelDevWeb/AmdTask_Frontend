@@ -391,6 +391,11 @@ const ProyectosProvider = ({ children }) => {
     }
   };
 
+  // Función para
+  const submitColaborador = async (email) => {
+    console.log(email);
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
@@ -411,6 +416,7 @@ const ProyectosProvider = ({ children }) => {
         modalEliminarTarea,
         handleModalEliminarTarea,
         eliminarTarea,
+        submitColaborador,
       }}
     >
       {children}

@@ -69,6 +69,7 @@ const Proyecto = () => {
             </Link>
           </div>
         </div>
+
         <button
           type="button"
           className="text-sm px-5 py-3 mt-5 w-full md:w-auto rounded-lg uppercase font-bold bg-sky-400 text-white text-center flex gap-2 items-center justify-center"
@@ -94,6 +95,7 @@ const Proyecto = () => {
           Nueva Tarea
         </button>
 
+        {/* Tareas  */}
         <p className="font-bold text-xl mt-10">Tareas del Proyecto</p>
 
         <div className="flex justify-center">
@@ -115,6 +117,17 @@ const Proyecto = () => {
               </p>
             )
           }
+        </div>
+
+        {/* Colaboradores */}
+        <div className="flex items-center justify-between mt-10">
+          <p className="font-bold text-xl">Colaboradores</p>
+          <Link
+            to={`/proyectos/nuevo-colaborador/${proyecto._id}`}
+            className="text-gray-400 uppercase font-bold hover:text-black"
+          >
+            Añadir
+          </Link>
         </div>
 
         <ModalFormularioTarea />

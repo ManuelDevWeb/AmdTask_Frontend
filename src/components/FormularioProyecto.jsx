@@ -18,7 +18,7 @@ const FormularioProyecto = () => {
   const params = useParams();
   const { id } = params;
 
-  // Destructurando los valores que retorna el contexto AuthContext por medio del hook useAuth
+  // Destructurando los valores que retorna el contexto ProyectosProvider por medio del hook useProyects
   const { mostrarAlerta, alerta, submitProyecto, proyecto } = useProyectos();
 
   // Se ejecuta cuando cambie params
