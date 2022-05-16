@@ -10,7 +10,7 @@ const FormularioColaborador = () => {
   const [email, setEmail] = useState("");
 
   // Destructurando los valores que retorna el contexto ProyectosProvider por medio del hook useProyects
-  const { mostrarAlerta, alerta, submitColaborador } = useProyectos();
+  const { mostrarAlerta, alerta, submitColaborador, cargando } = useProyectos();
 
   // Función donde validamos el formulario y enviamos petición
   const handleSubmit = (e) => {
@@ -32,6 +32,8 @@ const FormularioColaborador = () => {
 
   // Destructurando msg de alerta
   const { msg } = alerta;
+
+  // if (cargando) return "Cargando...";
 
   return (
     <form

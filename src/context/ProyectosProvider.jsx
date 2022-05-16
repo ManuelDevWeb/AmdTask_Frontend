@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +24,8 @@ const ProyectosProvider = ({ children }) => {
   const [tarea, setTarea] = useState({});
   // State que maneja el modal eliminar tarea
   const [modalEliminarTarea, setModalEliminarTarea] = useState(false);
+  // State que maneja el colaborador
+  const [colaborador, setColaborador] = useState({});
 
   const navigate = useNavigate();
 
@@ -202,7 +205,10 @@ const ProyectosProvider = ({ children }) => {
       // Actualizamos el state proyecto
       setProyecto(data);
     } catch (error) {
-      console.log(error);
+      mostrarAlerta({
+        msg: error.response.data.msg,
+        error: true,
+      });
     }
     setCargando(false);
   };
@@ -391,9 +397,79 @@ const ProyectosProvider = ({ children }) => {
     }
   };
 
-  // Función para
+  // Función para buscar colaborador
   const submitColaborador = async (email) => {
-    console.log(email);
+    setCargando(true);
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la petición post, indicamos la url y los parámetros a enviar
+      const { data } = await clienteAxios.post(
+        "/proyectos/colaboradores",
+        { email },
+        config
+      );
+      // Actualizamos el state de colaborador
+      setColaborador(data);
+      setAlerta({});
+    } catch (error) {
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true,
+      });
+    }
+    setCargando(false);
+  };
+
+  // Funcion para agregar colaborador
+  const agregarColaborador = async (email) => {
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la petición post, indicamos la url y los parámetros a enviar
+      const { data } = await clienteAxios.post(
+        `/proyectos/colaboradores/${proyecto._id}`,
+        email,
+        config
+      );
+      setAlerta({
+        msg: data.msg,
+        error: false,
+      });
+      setColaborador({});
+      setAlerta({});
+    } catch (error) {
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true,
+      });
+    }
   };
 
   // En value se almacena la información que estará disponible en todos los children
@@ -417,6 +493,8 @@ const ProyectosProvider = ({ children }) => {
         handleModalEliminarTarea,
         eliminarTarea,
         submitColaborador,
+        colaborador,
+        agregarColaborador,
       }}
     >
       {children}
