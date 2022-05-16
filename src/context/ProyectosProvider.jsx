@@ -26,6 +26,9 @@ const ProyectosProvider = ({ children }) => {
   const [modalEliminarTarea, setModalEliminarTarea] = useState(false);
   // State que maneja el colaborador
   const [colaborador, setColaborador] = useState({});
+  // State que maneja el modal eliminar colaborador
+  const [modalEliminarColaborador, setModalEliminarColaborador] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -430,6 +433,9 @@ const ProyectosProvider = ({ children }) => {
         msg: error.response.data.msg,
         error: true,
       });
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
     }
     setCargando(false);
   };
@@ -458,17 +464,83 @@ const ProyectosProvider = ({ children }) => {
         email,
         config
       );
+      // console.log(data);
       setAlerta({
         msg: data.msg,
         error: false,
       });
       setColaborador({});
-      setAlerta({});
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
         error: true,
       });
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
+    }
+  };
+
+  // Funcion para cambiar el valor de modalEliminarColaborador y actualiazr el state de colaborador
+  const handleModalEliminarColaborador = async (colaborador) => {
+    setModalEliminarColaborador(!modalEliminarColaborador);
+    setColaborador(colaborador);
+  };
+
+  // Funcion para eliminar colaborador
+  const eliminarColaborador = async () => {
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la petición post, indicamos la url y los parámetros a enviar
+      const { data } = await clienteAxios.post(
+        `/proyectos/eliminar-colaborador/${proyecto._id}`,
+        { id: colaborador._id },
+        config
+      );
+
+      // Actualizamos el state del proyecto
+      const proyectoActualizado = { ...proyecto };
+      console.log(proyectoActualizado);
+      proyectoActualizado.colaboradores =
+        proyectoActualizado.colaboradores.filter(
+          (colaboradorState) => colaboradorState._id !== colaborador._id
+        );
+      //
+      setProyecto(proyectoActualizado);
+      setAlerta({
+        msg: data.msg,
+        error: false,
+      });
+      setColaborador({});
+      setModalEliminarColaborador(false);
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
+    } catch (error) {
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true,
+      });
+      setTimeout(() => {
+        setAlerta({});
+      }, 3000);
     }
   };
 
@@ -495,6 +567,9 @@ const ProyectosProvider = ({ children }) => {
         submitColaborador,
         colaborador,
         agregarColaborador,
+        handleModalEliminarColaborador,
+        modalEliminarColaborador,
+        eliminarColaborador,
       }}
     >
       {children}

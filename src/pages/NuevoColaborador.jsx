@@ -27,7 +27,14 @@ const NuevoColaborador = () => {
     obtenerProyecto(id);
   }, []);
 
-  if (!proyecto?._id) return <Alerta alerta={alerta} />;
+  if (!proyecto?._id)
+    return (
+      <div className="flex justify-center">
+        <div className="w-full md:w-1/3 lg:w-1/4">
+          <Alerta alerta={alerta} />
+        </div>
+      </div>
+    );
 
   return (
     <>
