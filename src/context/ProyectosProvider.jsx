@@ -207,8 +207,9 @@ const ProyectosProvider = ({ children }) => {
       // console.log(data);
       // Actualizamos el state proyecto
       setProyecto(data);
+      setAlerta({});
     } catch (error) {
-      mostrarAlerta({
+      setAlerta({
         msg: error.response.data.msg,
         error: true,
       });
