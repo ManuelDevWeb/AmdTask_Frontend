@@ -518,7 +518,7 @@ const ProyectosProvider = ({ children }) => {
 
       // Actualizamos el state del proyecto
       const proyectoActualizado = { ...proyecto };
-      console.log(proyectoActualizado);
+      // console.log(proyectoActualizado);
       proyectoActualizado.colaboradores =
         proyectoActualizado.colaboradores.filter(
           (colaboradorState) => colaboradorState._id !== colaborador._id
@@ -542,6 +542,43 @@ const ProyectosProvider = ({ children }) => {
       setTimeout(() => {
         setAlerta({});
       }, 3000);
+    }
+  };
+
+  // Funcion para cambiar el estado de una tarea
+  const completarTarea = async (id) => {
+    try {
+      // Obtener token del local storage (Es poco probable que no haya token porque si está en esta página ya está autenticado)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      // Configuración bearer token
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Realizamos la petición post, indicamos la url y los parámetros a enviar
+      const { data } = await clienteAxios.post(
+        `/tareas/estado/${id}`,
+        {},
+        config
+      );
+      // Actualizamos el state de proyecto
+      const proyectoActualizado = { ...proyecto };
+      proyectoActualizado.tareas = proyectoActualizado.tareas.map(
+        (tareaState) => (tareaState._id === data._id ? data : tareaState)
+      );
+      setProyecto(proyectoActualizado);
+      setTarea({});
+      setAlerta({});
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -571,6 +608,7 @@ const ProyectosProvider = ({ children }) => {
         handleModalEliminarColaborador,
         modalEliminarColaborador,
         eliminarColaborador,
+        completarTarea,
       }}
     >
       {children}
