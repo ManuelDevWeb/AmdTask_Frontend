@@ -41,9 +41,7 @@ const Proyecto = () => {
   // Si está cargando mostramos spiner
   if (cargando) return "Cargando...";
 
-  return msg && alerta.error ? (
-    <Alerta alerta={alerta} />
-  ) : (
+  return (
     <>
       <div className="flex justify-between">
         <h1 className="font-black text-4xl">{nombre}</h1>
@@ -111,12 +109,6 @@ const Proyecto = () => {
 
       {/* Tareas  */}
       <p className="font-bold text-xl mt-10">Tareas del Proyecto</p>
-
-      <div className="flex justify-center">
-        <div className="w-full md:w-1/3 lg:w-1/4">
-          {msg && <Alerta alerta={alerta} />}
-        </div>
-      </div>
 
       <div className="bg-white shadow mt-10 rounded-lg">
         {

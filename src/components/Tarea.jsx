@@ -14,15 +14,22 @@ const Tarea = ({ tarea }) => {
 
   const admin = useAdmin();
 
+  // console.log(tarea);
+
   return (
     <div className="border-b p-5 flex justify-between items-center">
-      <div>
+      <div className="flex flex-col items-start">
         <p className="text-xl">{nombre}</p>
         <p className="text-sm text-gray-500 uppercase">{descripcion}</p>
         <p className="text-sm capitalize">{formatearFecha(fechaEntrega)}</p>
         <p className="text-gray-600">Prioridad: {prioridad}</p>
+        {estado && (
+          <p className="text-xs bg-green-600 uppercase p-1 rounded-lg text-white">
+            Completada por:{tarea.completado.nombre}{" "}
+          </p>
+        )}
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-col lg:flex-row gap-2">
         {
           // Validando que sea el admin
           admin && (

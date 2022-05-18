@@ -37,7 +37,7 @@ const FormularioColaborador = () => {
 
   return (
     <form
-      className="bg-white py-10 px-5 md:w-3/4 lg:w-1/2 rounded-lg shadow"
+      className="bg-white py-10 px-5 w-full md:w-3/4 lg:w-1/2 rounded-lg shadow"
       // Se ejecuta la función habdleSubmit cuando el usuario envía el formulario
       onSubmit={handleSubmit}
     >
