@@ -29,6 +29,8 @@ const ProyectosProvider = ({ children }) => {
   // State que maneja el modal eliminar colaborador
   const [modalEliminarColaborador, setModalEliminarColaborador] =
     useState(false);
+  // State que maneja el buscador
+  const [buscador, setBuscador] = useState(false);
 
   const navigate = useNavigate();
 
@@ -586,6 +588,11 @@ const ProyectosProvider = ({ children }) => {
     }
   };
 
+  // Funcion para cambiar el valor de buscador
+  const handleBuscador = async () => {
+    setBuscador(!buscador);
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
@@ -613,6 +620,8 @@ const ProyectosProvider = ({ children }) => {
         modalEliminarColaborador,
         eliminarColaborador,
         completarTarea,
+        buscador,
+        handleBuscador,
       }}
     >
       {children}
