@@ -603,7 +603,7 @@ const ProyectosProvider = ({ children }) => {
   };
 
   // Socket.io
-  const submitTareasProyecto = async (tarea) => {
+  const submitTareasProyecto = (tarea) => {
     // Agregando la tarea al state y actualizar el state de proyecto
     const proyectoActualizado = { ...proyecto };
     proyectoActualizado.tareas = [...proyectoActualizado.tareas, tarea];

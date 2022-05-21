@@ -55,9 +55,8 @@ const Proyecto = () => {
   // useEffect que se deja sin dependencias para que corra todo el tiempo
   useEffect(() => {
     // Recibiendo datos de respuesta desde el backend
-    socket.on("tarea agreada", (tareaNueva) => {
+    socket.on("tarea agregada", (tareaNueva) => {
       if (tareaNueva.proyecto === proyecto._id) {
-        // Enviamos la tarea que viene desde el backend a la funcion que se encargara de actualizar el state
         submitTareasProyecto(tareaNueva);
       }
     });
