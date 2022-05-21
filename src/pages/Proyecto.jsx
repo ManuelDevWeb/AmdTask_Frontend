@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
+// Cliente Socket.io
+import io from "socket.io-client";
+
 // Hooks
 import { useProyectos } from "../hooks/useProyectos";
 import { useAdmin } from "../hooks/useAdmin";
@@ -9,9 +12,10 @@ import { useAdmin } from "../hooks/useAdmin";
 import ModalFormularioTarea from "../components/ModalFormularioTarea";
 import Tarea from "../components/Tarea";
 import ModalEliminarTarea from "../components/ModalEliminarTarea";
-import Alerta from "../components/Alerta";
 import Colaborador from "../components/Colaborador";
 import ModalEliminarColaborador from "../components/ModalEliminarColaborador";
+
+let socket;
 
 const Proyecto = () => {
   // Leyendo el valor id que viene por URL
@@ -19,8 +23,14 @@ const Proyecto = () => {
   const { id } = params;
 
   // Destructurando los valores que retorna el contexto ProyectosContext por medio del hook useProyecto
-  const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta } =
-    useProyectos();
+  const {
+    obtenerProyecto,
+    proyecto,
+    cargando,
+    handleModalTarea,
+    alerta,
+    submitTareasProyecto,
+  } = useProyectos();
 
   const admin = useAdmin();
 
@@ -34,6 +44,24 @@ const Proyecto = () => {
   useEffect(() => {
     obtenerProyecto(id);
   }, []);
+
+  // useEffect para conectarnos a socket.io. Se ejecuta una sola vez para entrar al room
+  useEffect(() => {
+    socket = io(import.meta.env.VITE_BACKEND_URL);
+    // Enviando eventos desde el frontend hacia el backend
+    socket.emit("abrir proyecto", id);
+  }, []);
+
+  // useEffect que se deja sin dependencias para que corra todo el tiempo
+  useEffect(() => {
+    // Recibiendo datos de respuesta desde el backend
+    socket.on("tarea agreada", (tareaNueva) => {
+      if (tareaNueva.proyecto === proyecto._id) {
+        // Enviamos la tarea que viene desde el backend a la funcion que se encargara de actualizar el state
+        submitTareasProyecto(tareaNueva);
+      }
+    });
+  });
 
   // Destruturando msg de alerta
   const { msg } = alerta;
