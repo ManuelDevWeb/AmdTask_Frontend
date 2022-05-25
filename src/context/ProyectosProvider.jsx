@@ -1,6 +1,9 @@
 import { useState, useEffect, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Hooks
+import { useAuth } from "../hooks/useAuth";
+
 // Cliente Socket.io
 import io from "socket.io-client";
 
@@ -38,6 +41,9 @@ const ProyectosProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
+  // Destructurando los valores que retorna el contexto de AuthContext a través de useAuth
+  const { auth } = useAuth();
+
   // UseEffect que se ejecuta una sola vez
   useEffect(() => {
     const obtenerProyectos = async () => {
@@ -68,7 +74,7 @@ const ProyectosProvider = ({ children }) => {
       }
     };
     obtenerProyectos();
-  }, []);
+  }, [auth]);
 
   // UseEffect encargado de la conexion con Socket.i, se ejecuta una sola vez
   useEffect(() => {
@@ -634,6 +640,13 @@ const ProyectosProvider = ({ children }) => {
     setProyecto(proyectoActualizado);
   };
 
+  // Cerrar sesion
+  const cerrarSesionProyectos = () => {
+    setProyectos([]);
+    setProyecto({});
+    setAlerta({});
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
     <ProyectosContext.Provider
@@ -667,6 +680,7 @@ const ProyectosProvider = ({ children }) => {
         eliminarTareaProyecto,
         actualizarTareaProyecto,
         cambiarEstadoTarea,
+        cerrarSesionProyectos,
       }}
     >
       {children}

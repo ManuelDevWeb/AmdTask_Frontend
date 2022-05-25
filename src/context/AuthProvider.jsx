@@ -51,9 +51,14 @@ const AuthProvider = ({ children }) => {
     autenticarUsuario();
   }, []);
 
+  // Cerrar sesion
+  const cerrarSesionAuth = () => {
+    setAuth({});
+  };
+
   // En value se almacena la información que estará disponible en todos los children
   return (
-    <AuthContext.Provider value={{ auth, setAuth, cargando }}>
+    <AuthContext.Provider value={{ auth, setAuth, cargando, cerrarSesionAuth }}>
       {children}
     </AuthContext.Provider>
   );

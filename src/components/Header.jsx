@@ -2,12 +2,24 @@ import { Link } from "react-router-dom";
 
 // Hooks
 import { useProyectos } from "../hooks/useProyectos";
+import { useAuth } from "../hooks/useAuth";
 // Components
 import Busqueda from "./Busqueda";
 
 const Header = () => {
   // Destructurando los valores del contexto ProyectosContexto a traves del hook useProyectos
-  const { handleBuscador } = useProyectos();
+  const { handleBuscador, cerrarSesionProyectos } = useProyectos();
+
+  // Destructurando los valores del contexto AuthContexto a traves del hook useAuth
+  const { cerrarSesionAuth } = useAuth();
+
+  // Funcion que se ejecuta al dar click en el boton cerrar sesion
+  const handleCerrarSesion = () => {
+    cerrarSesionProyectos();
+    cerrarSesionAuth();
+    // Remover token del local storage
+    localStorage.removeItem("token");
+  };
 
   return (
     <header className="px-4 py-5 bg-white border-b">
@@ -30,6 +42,7 @@ const Header = () => {
           <button
             type="button"
             className="text-white text-sm bg-sky-600 p-3 rounded-md uppercase font-bold"
+            onClick={handleCerrarSesion}
           >
             Cerrar Sesión
           </button>
