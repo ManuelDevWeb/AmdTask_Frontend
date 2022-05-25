@@ -313,13 +313,11 @@ const ProyectosProvider = ({ children }) => {
         tarea,
         config
       );
-      console.log(data);
-      // Agregando la tarea al state y actualizar el state de proyecto
-      const proyectoActualizado = { ...proyecto };
-      proyectoActualizado.tareas = proyectoActualizado.tareas.map(
-        (tareaState) => (tareaState._id === data._id ? data : tareaState)
-      );
-      setProyecto(proyectoActualizado);
+
+      // Socket.io
+      // Enviando eventos desde el frontend hacia el backend
+      socket.emit("actualizar tarea", data);
+
       // Actualizar el state de alerta
       setAlerta({});
       setModalFormularioTarea(false);
@@ -353,6 +351,7 @@ const ProyectosProvider = ({ children }) => {
       setAlerta({});
       setModalFormularioTarea(false);
 
+      // Socket.io
       // Enviando eventos desde el frontend hacia el backend
       socket.emit("nueva tarea", data);
     } catch (error) {
@@ -400,13 +399,13 @@ const ProyectosProvider = ({ children }) => {
         msg: data.msg,
         error: false,
       });
-      // Eliminando la tarea y actualizando el state de proyecto
-      const proyectoActualizado = { ...proyecto };
-      proyectoActualizado.tareas = proyectoActualizado.tareas.filter(
-        (tareaState) => tareaState._id !== tarea._id
-      );
-      setProyecto(proyectoActualizado);
+
       setModalEliminarTarea(false);
+
+      // Socket.io
+      // Enviando eventos desde el frontend hacia el backend
+      socket.emit("eliminar tarea", tarea);
+
       setTarea({});
       setTimeout(() => {
         setAlerta({});
@@ -538,7 +537,6 @@ const ProyectosProvider = ({ children }) => {
         proyectoActualizado.colaboradores.filter(
           (colaboradorState) => colaboradorState._id !== colaborador._id
         );
-      //
       setProyecto(proyectoActualizado);
       setAlerta({
         msg: data.msg,
@@ -584,12 +582,11 @@ const ProyectosProvider = ({ children }) => {
         {},
         config
       );
-      // Actualizamos el state de proyecto
-      const proyectoActualizado = { ...proyecto };
-      proyectoActualizado.tareas = proyectoActualizado.tareas.map(
-        (tareaState) => (tareaState._id === data._id ? data : tareaState)
-      );
-      setProyecto(proyectoActualizado);
+
+      // Socket.io
+      // Enviando eventos desde el frontend hacia el backend
+      socket.emit("cambiar estado", data);
+
       setTarea({});
       setAlerta({});
     } catch (error) {
@@ -607,6 +604,33 @@ const ProyectosProvider = ({ children }) => {
     // Agregando la tarea al state y actualizar el state de proyecto
     const proyectoActualizado = { ...proyecto };
     proyectoActualizado.tareas = [...proyectoActualizado.tareas, tarea];
+    setProyecto(proyectoActualizado);
+  };
+
+  const eliminarTareaProyecto = (tarea) => {
+    // Eliminando la tarea y actualizando el state de proyecto
+    const proyectoActualizado = { ...proyecto };
+    proyectoActualizado.tareas = proyectoActualizado.tareas.filter(
+      (tareaState) => tareaState._id !== tarea._id
+    );
+    setProyecto(proyectoActualizado);
+  };
+
+  const actualizarTareaProyecto = (tarea) => {
+    // Agregando la tarea al state y actualizar el state de proyecto
+    const proyectoActualizado = { ...proyecto };
+    proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) =>
+      tareaState._id === tarea._id ? tarea : tareaState
+    );
+    setProyecto(proyectoActualizado);
+  };
+
+  const cambiarEstadoTarea = (tarea) => {
+    // Actualizamos el state de proyecto
+    const proyectoActualizado = { ...proyecto };
+    proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) =>
+      tareaState._id === tarea._id ? tarea : tareaState
+    );
     setProyecto(proyectoActualizado);
   };
 
@@ -640,6 +664,9 @@ const ProyectosProvider = ({ children }) => {
         buscador,
         handleBuscador,
         submitTareasProyecto,
+        eliminarTareaProyecto,
+        actualizarTareaProyecto,
+        cambiarEstadoTarea,
       }}
     >
       {children}

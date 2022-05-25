@@ -30,6 +30,9 @@ const Proyecto = () => {
     handleModalTarea,
     alerta,
     submitTareasProyecto,
+    eliminarTareaProyecto,
+    actualizarTareaProyecto,
+    cambiarEstadoTarea,
   } = useProyectos();
 
   const admin = useAdmin();
@@ -58,6 +61,27 @@ const Proyecto = () => {
     socket.on("tarea agregada", (tareaNueva) => {
       if (tareaNueva.proyecto === proyecto._id) {
         submitTareasProyecto(tareaNueva);
+      }
+    });
+
+    // Recibiendo datos de respuesta desde el backend
+    socket.on("tarea eliminada", (tareaEliminada) => {
+      if (tareaEliminada.proyecto === proyecto._id) {
+        eliminarTareaProyecto(tareaEliminada);
+      }
+    });
+
+    // Recibiendo datos de respuesta desde el backend
+    socket.on("tarea actualizada", (tareaActualizada) => {
+      if (tareaActualizada.proyecto._id === proyecto._id) {
+        actualizarTareaProyecto(tareaActualizada);
+      }
+    });
+
+    // Recibiendo datos de respuesta desde el backend
+    socket.on("nuevo estado", (nuevoEstadoTarea) => {
+      if (nuevoEstadoTarea.proyecto._id === proyecto._id) {
+        cambiarEstadoTarea(nuevoEstadoTarea);
       }
     });
   });
